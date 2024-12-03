@@ -8,11 +8,21 @@ import {
   RegisterData,
 } from "@/types/api";
 import axios, { AxiosError } from "axios";
-import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
-
-const BASE_URL =
-  Constants.expoConfig?.extra?.apiUrl || "http://localhost:8080/api/v1";
+import { Platform } from "react-native";
+const getBaseUrl = () => {
+  if (__DEV__) {
+    if (Platform.OS === "android") {
+      // Android emulator için 10.0.2.2 kullan
+      return "http://10.0.2.2:8080/api/v1";
+    } else if (Platform.OS === "ios") {
+      // iOS simulator için localhost
+      return "http://localhost:8080/api/v1";
+    }
+  }
+  // Production URL'i
+  return "http://localhost:8080/api/v1";
+};
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (token: string) => void;
@@ -31,7 +41,7 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 export const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: getBaseUrl(),
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -54,7 +64,6 @@ api.interceptors.response.use(
   async (error: AxiosError<APIError>) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
     const authStore = useAuthStore.getState();
-
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -96,7 +105,6 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
-
     // API error handling
     const errorMessage = error.response?.data?.message || "Bir hata oluştu";
     return Promise.reject({

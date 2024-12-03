@@ -1,33 +1,27 @@
 // app/(app)/_layout.tsx
 import { useAuthStore } from "@/stores/authStore";
-import { Redirect, Stack } from "expo-router";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 export default function AppLayout() {
   const { token } = useAuthStore();
 
-  // Token yoksa login sayfasına yönlendir
-  if (!token) {
-    return <Redirect href="/(auth)/login" />;
-  }
+  // Token yoksa login'e yönlendir
+  console.log(token);
 
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "#2196F3",
-        },
-        headerTintColor: "#fff",
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
-      }}
-    >
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Site Yönetim",
+    <>
+      <StatusBar style="dark" />
+      <Stack
+        screenOptions={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#fff",
+          },
+          headerShadowVisible: false,
+          animation: "fade",
         }}
       />
-    </Stack>
+    </>
   );
 }

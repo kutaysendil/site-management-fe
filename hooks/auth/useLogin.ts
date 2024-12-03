@@ -6,14 +6,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 
 export const useLogin = () => {
-  const { setToken, setUser } = useAuthStore();
+  const { setUser } = useAuthStore();
   const queryClient = useQueryClient();
 
   return useMutation<LoginResponse, APIError, LoginCredentials>({
     mutationFn: authAPI.login,
     onSuccess: (data) => {
-      setToken(data.accessToken);
-      setUser(data.user);
+      setUser(data);
       queryClient.clear(); // Önbellekteki eski verileri temizle
       router.replace("/(app)/dashboard");
     },

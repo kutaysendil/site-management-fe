@@ -1,11 +1,10 @@
-import { InternalAxiosRequestConfig } from 'axios';
+import { InternalAxiosRequestConfig } from "axios";
 
 export interface APIError {
   message: string;
   status: number;
   errors?: Record<string, string[]>;
 }
-
 
 export interface LoginCredentials {
   email: string;
@@ -22,14 +21,14 @@ export interface RegisterData {
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    roles: string[];
-    apartmentNo?: string;
-  };
+  email: string;
+  name: string;
+  surname: string;
+  roles: string[];
+  permissions: string[];
+  apartmentNumber?: string;
+  phoneNumber?: string;
 }
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
-	_retry?: boolean;
-  }
+  _retry?: boolean;
+}
